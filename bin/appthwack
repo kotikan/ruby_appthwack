@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+require 'dotenv'
+Dotenv.load
+
+require 'commander/import'
+
+$:.push File.expand_path("../../lib", __FILE__)
+require 'ruby_appthwack'
+
+HighLine.track_eof = false # Fix for built-in Ruby
+
+program :version, AppThwack::VERSION
+program :description, 'Run UI tests from the command-line on AppThwack.com'
+
+program :help, 'Author', 'Sam Stewart <sam@playhaven.com>'
+program :help, 'Website', 'http://playhaven.com'
+program :help_formatter, :compact
+
+default_command :help
+
+require 'ruby_appthwack/commands'
