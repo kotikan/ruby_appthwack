@@ -3,6 +3,8 @@
 require 'dotenv'
 Dotenv.load
 
+say_error 'Must set environment variable APPTHWACK_API_KEY' if ENV['APPTHWACK_API_KEY'].nil?
+
 require 'commander/import'
 
 $:.push File.expand_path("../../lib", __FILE__)

@@ -12,7 +12,7 @@ module AppThwack::API
           JSON.parse(
             Typhoeus.get(
               "https://appthwack.com/api/project/",
-              userpwd: "#{APPTHWACK_API_KEY}:"
+              userpwd: "#{ENV['APPTHWACK_API_KEY']}:"
             ).body
           )
         
@@ -25,7 +25,7 @@ module AppThwack::API
           JSON.parse(
             Typhoeus.get(
               "https://appthwack.com/api/devicepool/#{proj_id}",
-              userpwd: "#{APPTHWACK_API_KEY}:"
+              userpwd: "#{ENV['APPTHWACK_API_KEY']}:"
             ).body
           )
         
@@ -45,7 +45,7 @@ module AppThwack::API
         res = JSON.parse(
           Typhoeus.post(
             "https://appthwack.com/api/file",
-            userpwd: "#{APPTHWACK_API_KEY}:",
+            userpwd: "#{ENV['APPTHWACK_API_KEY']}:",
             params: {
               name: File.basename(f)
             },
@@ -65,7 +65,7 @@ module AppThwack::API
         res = JSON.parse( 
           Typhoeus.post(
             "https://appthwack.com/api/run",
-            userpwd: "#{APPTHWACK_API_KEY}:",
+            userpwd: "#{ENV['APPTHWACK_API_KEY']}:",
             params: params
           ).body
         )
@@ -77,7 +77,7 @@ module AppThwack::API
         res = JSON.parse(
             Typhoeus.get(
               "https://appthwack.com/api/run/#{proj_id}/#{run_id}/status",
-              userpwd: "#{APPTHWACK_API_KEY}:",
+              userpwd: "#{ENV['APPTHWACK_API_KEY']}:",
             ).body
         )
 
@@ -92,7 +92,7 @@ module AppThwack::API
 
         resp = Typhoeus.get(
           "https://appthwack.com/api/run/#{proj_id}/#{run_id}",
-          userpwd: "#{APPTHWACK_API_KEY}:",
+          userpwd: "#{ENV['APPTHWACK_API_KEY']}:",
           params: {
             format: "archive"
           }
