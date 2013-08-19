@@ -1,3 +1,4 @@
+
 command :run do |c|
   c.syntax = 'appthwack run [options]'
   c.summary = 'Packages tests and pushes them to AppThwack for Running'
@@ -22,22 +23,22 @@ command :run do |c|
 
     # Feature: list of tests to include via command line?
     if options.testtype.eql? 'calabash'
-      options.test_path = AppThwack::Packaging.create_calabash_package options.proj_id, options.test_path
+      options.test = AppThwack::Packaging.create_calabash_package options.proj_id, options.test
     end
 
     # if the platform is iOS, make an IPA before building
     if options.platform.eql? 'ios'
-      options.app_path = AppThwack::Packaging.create_ipa(options.scheme)
+      options.app = AppThwack::Packaging.create_ipa(options.scheme)
     end
 
     # start by uploading the app
-    options.app_id = (upload_file options.app_path)[:file_id]
+    options.app_id = (AppThwack::API.upload_file options.app)[:file_id]
     say_ok "App package ID:   #{options.app_id}"
 
     exit 3 if options.app_id.nil?
 
     # now upload the test package
-    options.test_id = (upload_file options.test_path)[:file_id] 
+    options.test_id = (AppThwack::API.upload_file options.test)[:file_id] 
 
     say_ok "Test packagae ID: #{options.test_id}"
 
@@ -49,12 +50,12 @@ command :run do |c|
 
     params['junit'] = { junit: options.test_id }
 
-    result = start_test(
-      File.basename(options.app_path), 
+    result = AppThwack::API.start_test(
+      File.basename(Dir.glob(options.app).first), 
       options.proj_id,
       options.app_id, 
       options.pool_id, 
-      params[options.test_type]
+      params[options.testtype]
     )
 
     options.run_id = result[:run_id]
@@ -66,18 +67,18 @@ command :run do |c|
     sleep 5
 
     # wait for test to terminate
-    until not test_running? options.proj_id, options.run_id or not options.wait
+    until not AppThwack::API.test_running? options.proj_id, options.run_id or not options.wait
       print "."
       sleep 30
     end
 
     # download the results
     if options.download_results
-      zip = download_results proj_id, run_id
-      say_ok "Results ZIP: #{zip}"
+      zip = AppThwack::API.download_results proj_id, run_id
+      say_ok "Results zip #{zip}"
     end
 
-    say_ok "Tests successfully run"
+    say_ok "Tests started successfully"
 
   end
 end
