@@ -1,11 +1,11 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby 
 
 require 'dotenv'
 Dotenv.load
 
-say_error 'Must set environment variable APPTHWACK_API_KEY' if ENV['APPTHWACK_API_KEY'].nil?
-
 require 'commander/import'
+
+say_error 'Must set environment variable APPTHWACK_API_KEY' if ENV['APPTHWACK_API_KEY'].nil?
 
 $:.push File.expand_path("../../lib", __FILE__)
 require 'ruby_appthwack'

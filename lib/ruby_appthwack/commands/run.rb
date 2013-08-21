@@ -11,7 +11,8 @@ command :run do |c|
   c.option '--app TEST', 'Path of the application (can be Glob syntax)'
   c.option '--test TEST', 'Path of the test package'
   c.option '--wait', 'Wait for the tests to complete'
-  c.option '--scheme', 'XCode scheme for packaging the IPA'
+  c.option '--scheme SCHEME', 'XCode scheme for packaging the IPA'
+  c.option '--downloadresults', 'Decide whether or not to wait and download results'
 
   c.action do |args, options|
 
@@ -66,16 +67,23 @@ command :run do |c|
     
     sleep 5
 
+    print "\n"
+    
     # wait for test to terminate
     until not AppThwack::API.test_running? options.proj_id, options.run_id or not options.wait
       print "."
       sleep 30
     end
 
-    # download the results
-    if options.download_results
-      zip = AppThwack::API.download_results proj_id, run_id
+    # download the results and we should have waited
+    if options.downloadresults and options.wait
+      zip = AppThwack::API.download_results options.proj_id, options.run_id
+
       say_ok "Results zip #{zip}"
+
+      dst = AppThwack::Reports.convert_reports zip, options.platform
+
+      say_ok "Converted reports to #{dst}"
     end
 
     say_ok "Tests started successfully"

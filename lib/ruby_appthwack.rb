@@ -1,6 +1,7 @@
 module AppThwack
-  VERSION = '0.0.1'
+  VERSION = '0.0.2'
 end
 
-require 'ruby_appthwack/appthwack_api.rb'
-require 'ruby_appthwack/packaging.rb'
+require_relative 'ruby_appthwack/reports.rb'
+require_relative 'ruby_appthwack/appthwack_api.rb'
+require_relative 'ruby_appthwack/packaging.rb'

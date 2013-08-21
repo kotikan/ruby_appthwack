@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "ruby_appthwack"
 
 Gem::Specification.new do |s|
-  s.name        = "Ruby AppThwack"
+  s.name        = "Ruby_AppThwack"
   s.authors     = ["Sam Stewart"]
   s.email       = "sam@playhaven.com"
   s.homepage    = "https://github.com/samstewart/ruby_appthwack"
