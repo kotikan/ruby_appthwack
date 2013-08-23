@@ -32,11 +32,10 @@ module AppThwack::API
         return (res.select { |pool| pool['name'].eql? name }).first['id']
       end
 
+      
       def download_file(src, dst)
-
-        File.open(dst, 'w') { |f| f.write(Typhoeus.get(src).body) }
-        
-        return dst
+        # We use curl to download the file to avoid running out of RAM
+        return dst if system "curl -X GET '#{src}' -o '#{dst}' --silent"
       end
 
       def upload_file(src)

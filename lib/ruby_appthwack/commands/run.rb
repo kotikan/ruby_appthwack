@@ -52,7 +52,7 @@ command :run do |c|
     params['junit'] = { junit: options.test_id }
 
     result = AppThwack::API.start_test(
-      File.basename(Dir.glob(options.app).first), 
+      File.basename(Dir.glob(options.app).first) + ' -- CLI', 
       options.proj_id,
       options.app_id, 
       options.pool_id, 
@@ -68,15 +68,19 @@ command :run do |c|
     sleep 5
 
     print "\n"
-    
+
     # wait for test to terminate
     until not AppThwack::API.test_running? options.proj_id, options.run_id or not options.wait
       print "."
       sleep 30
     end
 
+    print "\n"
+
     # download the results and we should have waited
     if options.downloadresults and options.wait
+      say_ok 'Downloading results...'
+      
       zip = AppThwack::API.download_results options.proj_id, options.run_id
 
       say_ok "Results zip #{zip}"

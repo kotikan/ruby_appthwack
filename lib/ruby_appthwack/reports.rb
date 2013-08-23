@@ -36,27 +36,29 @@ module AppThwack::Reports
 				puts device
 
 				f = File.join(reports, f, intermediate_folders, 'raw_calabash_json_output.instrtxt')
+				
+				if File.exists? f
+					features = []
 
-				features = []
+					# now we just add the device prefix to each feature name to make it unique
+					File.open(f, 'r') do |io|
 
-				# now we just add the device prefix to each feature name to make it unique
-				File.open(f, 'r') do |io|
+						features = JSON.load(io)
 
-					features = JSON.load(io)
-
-					if not features.nil?
-						
-						features.each_index do |i|
-							# append the device name to the feature name
-							features[i]['name'] = "#{features[i]['name']} on #{device}"
+						if not features.nil?
+							
+							features.each_index do |i|
+								# append the device name to the feature name
+								features[i]['name'] = "#{features[i]['name']} on #{device}"
+							end
 						end
-					end
 
-					Dir.mkdir dst if not Dir.exists? dst
+						Dir.mkdir dst if not Dir.exists? dst
 
-					# now write out the new file
-					File.open(File.join(dst, "#{Time.now.to_i}_#{folder_name}.json"), 'w') do |io|
-						JSON.dump(features, io) unless features.nil?
+						# now write out the new file
+						File.open(File.join(dst, "#{Time.now.to_i}_#{folder_name}.json"), 'w') do |io|
+							JSON.dump(features, io) unless features.nil?
+						end
 					end
 				end
 			end
