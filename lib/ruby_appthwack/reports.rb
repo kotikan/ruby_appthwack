@@ -5,11 +5,14 @@ module AppThwack::Reports
 	class << self
 
 		def extract_reports(reports)
-			
-			'unzipped_reports' if system "rm -rf unzipped_reports && unzip -qq #{reports} -d unzipped_reports"
+			# make new folder name by chopping off .zip file
+			out = reports.sub('.zip', '')
+			# unzip then return the new folder name
+			out if system "rm -rf #{out} && unzip -qq #{reports} -d #{out}"
 		end
 
-		# Converts Android reports into results readable by Cucumber plugin
+		# Converts Android reports into results readable by Cucumber plugin.
+		# You should pass in the folder locatino of the reports
 		def convert_reports(reports, platform='android')
 			# default to android folder
 			intermediate_folders = 'calabash_tests_from_features.zip'
@@ -21,8 +24,7 @@ module AppThwack::Reports
 				 intermediate_folders = 'calabash'
 			end
 
-			reports = extract_reports(reports)
-			folders = Dir.entries(reports).select {|f| not f.eql? '.' and not f.eql? '..' }
+			folders = Dir["#{reports}/*"]
 
 			# extract for each of the devices
 			folders.each do |f|
@@ -30,18 +32,14 @@ module AppThwack::Reports
 				# capitalize every word
 				device = f.gsub('_', ' ').split.map(&:capitalize).join(' ')
 
-				# original folder name
-				folder_name = f
-
-				puts device
-
-				f = File.join(reports, f, intermediate_folders, 'raw_calabash_json_output.instrtxt')
+				report = File.join(f, intermediate_folders, 'raw_calabash_json_output.instrtxt')
 				
-				if File.exists? f
+				if File.exists? report
 					features = []
+					
 
 					# now we just add the device prefix to each feature name to make it unique
-					File.open(f, 'r') do |io|
+					File.open(report, 'r') do |io|
 
 						features = JSON.load(io)
 
@@ -55,9 +53,13 @@ module AppThwack::Reports
 
 						Dir.mkdir dst if not Dir.exists? dst
 
+						# original folder name
+						folder_name = f.sub(reports + "/", '')
+
 						# now write out the new file
 						File.open(File.join(dst, "#{Time.now.to_i}_#{folder_name}.json"), 'w') do |io|
 							JSON.dump(features, io) unless features.nil?
+
 						end
 					end
 				end

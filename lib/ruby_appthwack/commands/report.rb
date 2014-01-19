@@ -6,6 +6,7 @@ command :reports do |c|
 	c.option '--project PROJECT', 'The project name of the running tests'
 	c.option '--runid INT', 'The run ID of the test'
 	c.option '--platform PLATFORM', 'The mobile platform of the app under test'
+	c.option '--reports REPORTS', 'The location of the downloaded reports'
 
 	c.action do |args, options|
 		say_error 'Need project name and run ID' if options.runid.nil? or options.project.nil?
@@ -20,12 +21,13 @@ command :reports do |c|
 
 		say_ok 'Downloading reports...'
 
-		reports = AppThwack::API.download_results options.proj_id, options.runid
+		reports = AppThwack::API.download_results options.proj_id, options.runid, options.reports
 
-		say_ok "Downloaded raw reports: #{reports}"
+		say_ok "Downloaded raw reports to #{reports}"
 
-		AppThwack::Reports.convert_reports reports, options.platform
+		reports = AppThwack::Reports.extract_reports reports
 
-		say_ok 'Converted reports'
+		say_ok "Extracted reports to #{reports}"
+
 	end
 end

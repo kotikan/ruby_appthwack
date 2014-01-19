@@ -2,7 +2,6 @@
 require 'ostruct'
 require "json"
 require "typhoeus"
-require "ostruct"
 
 module AppThwack::API
 
@@ -87,7 +86,7 @@ module AppThwack::API
         return test_status?( proj_id, run_id ) != 'completed'
       end
 
-      def download_results(proj_id, run_id)
+      def download_results(proj_id, run_id, output)
 
         resp = Typhoeus.get(
           "https://appthwack.com/api/run/#{proj_id}/#{run_id}",
@@ -97,7 +96,7 @@ module AppThwack::API
           }
         )
 
-        return ( download_file resp.headers_hash['Location'], "#{proj_id}_#{run_id}.zip" ) if resp.code == 303
+        return ( download_file resp.headers_hash['Location'], output ) if resp.code == 303
       end
   end
 end

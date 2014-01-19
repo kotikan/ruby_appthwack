@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
+# Note: we need the extra '../' since relative to *file*
 $:.push File.expand_path("../lib", __FILE__)
-require "ruby_appthwack"
+require 'ruby_appthwack'
 
 Gem::Specification.new do |s|
   s.name        = "Ruby_AppThwack"
@@ -18,12 +19,13 @@ Gem::Specification.new do |s|
   s.add_dependency "faraday_middleware", "~> 0.9"
   s.add_dependency "dotenv", "~> 0.7"
   s.add_dependency "shenzhen", "~> 0.4.0"
+  s.add_dependency "typhoeus", ">= 0.6.7"
 
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"
 
-  s.files         = Dir["./**/*"].reject { |file| file =~ /\.\/(bin|log|pkg|script|spec|test|vendor)/ }
+  s.files         = Dir['lib/*', 'lib/ruby_appthwack/*', 'lib/ruby_appthwack/commands/*']
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.executables   = 'appthwack'
   s.require_paths = ["lib"]
 end

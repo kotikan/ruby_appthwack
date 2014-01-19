@@ -1,4 +1,3 @@
-
 command :run do |c|
   c.syntax = 'appthwack run [options]'
   c.summary = 'Packages tests and pushes them to AppThwack for Running'
@@ -12,7 +11,8 @@ command :run do |c|
   c.option '--test TEST', 'Path of the test package'
   c.option '--wait', 'Wait for the tests to complete'
   c.option '--scheme SCHEME', 'XCode scheme for packaging the IPA'
-  c.option '--downloadresults', 'Decide whether or not to wait and download results'
+  c.option '--results STRING', String, 'Location of downloaded results.'
+  
 
   c.action do |args, options|
 
@@ -77,17 +77,9 @@ command :run do |c|
 
     print "\n"
 
-    # download the results and we should have waited
-    if options.downloadresults and options.wait
-      say_ok 'Downloading results...'
-      
-      zip = AppThwack::API.download_results options.proj_id, options.run_id
-
-      say_ok "Results zip #{zip}"
-
-      dst = AppThwack::Reports.convert_reports zip, options.platform
-
-      say_ok "Converted reports to #{dst}"
+    # download the results if we waited..
+    if options.results and options.wait
+      `appthwack reports --project #{options.project} --runid #{options.run_id} --platform #{options.platform} --reports #{options.results}`
     end
 
     say_ok "Tests started successfully"

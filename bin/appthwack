@@ -1,9 +1,12 @@
-#!/usr/bin/env ruby 
+#!/usr/bin/env ruby
 
 require 'dotenv'
 Dotenv.load
 
 require 'commander/import'
+
+# testing only!
+ENV['APPTHWACK_API_KEY'] = 'sam'
 
 say_error 'Must set environment variable APPTHWACK_API_KEY' if ENV['APPTHWACK_API_KEY'].nil?
 
