@@ -29,11 +29,16 @@ module AppThwack::Reports
 			# extract for each of the devices
 			folders.each do |f|
 
+				puts f
 				# capitalize every word
 				device = f.gsub('_', ' ').split.map(&:capitalize).join(' ')
 
-				report = File.join(f, intermediate_folders, 'raw_calabash_json_output.instrtxt')
+				# try to find the next intermediate folder
+				intermediate_folders = Dir["#{f}/calabash*"]
+
+				report = File.join(intermediate_folders.first, 'raw_calabash_json_output.instrtxt')
 				
+				puts report 
 				if File.exists? report
 					features = []
 					

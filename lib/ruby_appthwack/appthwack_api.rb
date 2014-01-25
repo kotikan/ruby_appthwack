@@ -96,7 +96,8 @@ module AppThwack::API
           }
         )
 
-        return ( download_file resp.headers_hash['Location'], output ) if resp.code == 303
+        # we save the reports to a zip file
+        return ( download_file resp.headers_hash['Location'], output + '.zip') if resp.code == 303
       end
   end
 end
