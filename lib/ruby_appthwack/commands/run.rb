@@ -1,3 +1,5 @@
+require 'commander/command'
+
 command :run do |c|
   c.syntax = 'appthwack run [options]'
   c.summary = 'Packages tests and pushes them to AppThwack for Running'
@@ -15,7 +17,6 @@ command :run do |c|
   
 
   c.action do |args, options|
-
     options.proj_id   = AppThwack::API.get_project_id  options.project
     options.pool_id   = AppThwack::API.get_device_pool options.proj_id,  options.devices
 
@@ -77,11 +78,11 @@ command :run do |c|
 
     print "\n"
 
-    # download the results if we waited..
     if options.results and options.wait
-      `appthwack reports --project #{options.project} --runid #{options.run_id} --platform #{options.platform} --reports #{options.results}`
+      `#{File.dirname(__FILE__)}/../../../bin/appthwack reports --project '#{options.project}' --runid #{options.run_id} --platform #{options.platform} --reports '#{options.results}'`
+      say_ok "Downloaded results"
     end
-
+    
     say_ok "Tests started successfully"
 
   end
