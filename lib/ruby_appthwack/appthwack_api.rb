@@ -37,6 +37,17 @@ module AppThwack::API
         return dst if system "curl -X GET '#{src}' -o '#{dst}' --silent"
       end
 
+      def get_files
+        res = JSON.parse(
+            Typhoeus.get(
+                "https://appthwack.com/api/file",
+                userpwd: "#{ENV['APPTHWACK_API_KEY']}:"
+            ).body
+        )
+
+        return res
+      end
+
       def upload_file(src)
         f = Dir.glob( src ).first
 
@@ -54,6 +65,17 @@ module AppThwack::API
         )
         
         return { :file_id => res["file_id"], :succeeded? => res['message'].nil?, :message => res['message'] }
+      end
+
+      def delete_file(file_id)
+        res = JSON.parse(
+            Typhoeus.delete(
+                "https://appthwack.com/api/file/#{file_id}",
+                userpwd: "#{ENV['APPTHWACK_API_KEY']}:"
+            ).body
+        )
+
+        return { :message => res['message'] }
       end
 
       def start_test(name, proj_id, app_id, pool_id, params = {})
